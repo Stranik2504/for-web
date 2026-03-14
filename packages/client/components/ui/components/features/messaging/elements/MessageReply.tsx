@@ -96,7 +96,6 @@ const Attachments = styled("em", {
 const Link = styled("a", {
   base: {
     minWidth: 0,
-    display: "flex",
     alignItems: "center",
     gap: "var(--gap-md)",
   },
@@ -110,11 +109,8 @@ export function MessageReply(props: Props) {
     if (content.length > 128) {
       content = content.slice(0, 128) + "...";
     }
-    content = content.replace(/\n/g, " ");
 
-    content = content.replace(/ /g, "\u00A0");
-
-    return renderSimpleMarkdown(content);
+    return renderSimpleMarkdown(content.replace(/\n/g, " "));
   };
 
   return (
@@ -161,7 +157,6 @@ export function MessageReply(props: Props) {
 
 const ReplyContent = styled("div", {
   base: {
-    display: "flex",
     overflow: "hidden",
     alignItems: "center",
     whiteSpace: "nowrap",
