@@ -339,6 +339,10 @@ msgstr "Allow others to add your bot to their servers from Discover"
 msgid "Already friends with this user."
 msgstr "Already friends with this user."
 
+#: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
+msgid "Always Ask for Screen Share Quality"
+msgstr "Always Ask for Screen Share Quality"
+
 #: components/app/interface/settings/user/Language.tsx
 msgid "American (MM/DD/YYYY)"
 msgstr "American (MM/DD/YYYY)"
@@ -497,6 +501,7 @@ msgstr "By creating this server, you agree to the <0>Acceptable Use Policy</0>."
 
 #: components/modal/modals/SignOutSessions.tsx
 #: components/modal/modals/ServerIdentity.tsx
+#: components/modal/modals/ScreenShareSettings.tsx
 #: components/modal/modals/ResetBotToken.tsx
 #: components/modal/modals/ReportContent.tsx
 #: components/modal/modals/RenameSession.tsx
@@ -1087,6 +1092,10 @@ msgstr "Display Name"
 msgid "Do Not Disturb"
 msgstr "Do Not Disturb"
 
+#: components/modal/modals/ScreenShareSettings.tsx
+msgid "Don't ask me again"
+msgstr "Don't ask me again"
+
 #: components/modal/modals/LinkWarning.tsx
 msgid "Don't ask me again for "
 msgstr "Don't ask me again for "
@@ -1361,6 +1370,10 @@ msgstr "Give feedback on Stoat"
 msgid "Give us some detail"
 msgstr "Give us some detail"
 
+#: components/modal/modals/ScreenShareSettings.tsx
+msgid "Go"
+msgstr "Go"
+
 #: components/auth/src/flows/FlowVerify.tsx
 #: components/auth/src/flows/FlowVerify.tsx
 #: components/auth/src/flows/FlowReset.tsx
@@ -1426,6 +1439,10 @@ msgstr "Helped translate Stoat"
 #: components/modal/modals/CreateInvite.tsx
 msgid "Here is your new invite code: <0>{0}</0>"
 msgstr "Here is your new invite code: <0>{0}</0>"
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActiveRoom.tsx
+msgid "Hide Others"
+msgstr "Hide Others"
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "High Contrast"
@@ -2358,6 +2375,11 @@ msgstr "Saved Notes"
 msgid "Scams or fraud"
 msgstr "Scams or fraud"
 
+#: components/modal/modals/ScreenShareSettings.tsx
+#: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
+msgid "Screen Share Settings"
+msgstr "Screen Share Settings"
+
 #: components/modal/modals/AddBot.tsx
 msgid "Search for groups..."
 msgstr "Search for groups..."
@@ -2386,6 +2408,10 @@ msgstr "Select members to add"
 #: components/app/interface/settings/user/voice/VoiceProcessingOptions.tsx
 msgid "Select noise suppression"
 msgstr "Select noise suppression"
+
+#: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
+msgid "Select screen share quality"
+msgstr "Select screen share quality"
 
 #: components/app/interface/settings/user/Language.tsx
 msgid "Select your language"
@@ -2512,6 +2538,10 @@ msgstr "Share camera or screen in voice call"
 #: components/app/interface/settings/user/Native.tsx
 msgid "Show corrections and suggestions as you type."
 msgstr "Show corrections and suggestions as you type."
+
+#: components/ui/components/features/voice/callCard/VoiceCallCardActiveRoom.tsx
+msgid "Show Others"
+msgstr "Show Others"
 
 #: components/app/interface/settings/user/appearance/AppearanceMenu.tsx
 msgid "Show send message button"
@@ -2997,6 +3027,10 @@ msgstr "Viewing older messages"
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Voice"
 msgstr "Voice"
+
+#: components/app/interface/settings/UserSettings.tsx
+msgid "Voice & Video"
+msgstr "Voice & Video"
 
 #: components/modal/modals/CreateChannel.tsx
 msgid "Voice Channel"
