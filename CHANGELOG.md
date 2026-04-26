@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.0](https://github.com/stoatchat/for-web/compare/stoat-for-web-v0.5.0...stoat-for-web-v0.6.0) (2026-04-26)
+
+
+### Features
+
+* Screen share settings UI modal ([#1111](https://github.com/stoatchat/for-web/issues/1111)) ([84677f8](https://github.com/stoatchat/for-web/commit/84677f8f8f2b3c50fd7b012c0c9172b78f10ee7a))
+
+
+### Bug Fixes
+
+* also check if the member is the owner on UserProfileRoles.tsx ([#1053](https://github.com/stoatchat/for-web/issues/1053)) ([a7a70ee](https://github.com/stoatchat/for-web/commit/a7a70ee7ef0be019a26ebbfe05b2c42172c9958b))
+* apply shared scrollbar styles to chat input ([0b94704](https://github.com/stoatchat/for-web/commit/0b94704c061dfacb8e0d1f7558ef0c920c52d8f6))
+* chat input custom scrollbar ([#1060](https://github.com/stoatchat/for-web/issues/1060)) ([0b94704](https://github.com/stoatchat/for-web/commit/0b94704c061dfacb8e0d1f7558ef0c920c52d8f6))
+* fix translation for hide/show others ([99540ef](https://github.com/stoatchat/for-web/commit/99540eff494a861e8b4fe9e38b78df367863e504))
+* translate hide/show others correctly ([#1121](https://github.com/stoatchat/for-web/issues/1121)) ([99540ef](https://github.com/stoatchat/for-web/commit/99540eff494a861e8b4fe9e38b78df367863e504))
+* Use 'new-password' field in account creation form ([#1052](https://github.com/stoatchat/for-web/issues/1052)) ([ef5428e](https://github.com/stoatchat/for-web/commit/ef5428eec624bb1a5ec4022a56adb464d6ca1fb9))
+
 ## [0.5.0](https://github.com/stoatchat/for-web/compare/stoat-for-web-v0.4.0...stoat-for-web-v0.5.0) (2026-04-12)
 
 
