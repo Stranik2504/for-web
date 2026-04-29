@@ -332,6 +332,11 @@ class Voice {
     } else {
       const qualities = this.getEnabledScreenShareQualities();
       try {
+        console.log("1");
+        console.log(this.getEnabledScreenShareQualities()[
+        this.#settings.screenShareQuality || "low"
+          ]?.resolution);
+        console.log("2");
         const localTrack = await room.localParticipant.setScreenShareEnabled(
           true,
           {
@@ -349,7 +354,9 @@ class Voice {
         if (localTrack) {
           const callback = async (qualityName: ScreenShareQualityName) => {
             const quality = qualities[qualityName] || qualities.low!;
+            console.log("3");
             console.log(quality);
+            console.log("4");
 
             if (localTrack.videoTrack) {
               await localTrack.videoTrack.mediaStreamTrack.applyConstraints({
