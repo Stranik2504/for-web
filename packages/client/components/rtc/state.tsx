@@ -265,12 +265,6 @@ class Voice {
       },
     };
 
-    console.log(this.getClient().configured());
-    console.log(this.getClient().configuration);
-    console.log(this.getClient().configuration?.features);
-    console.log(this.getClient().configuration?.features?.limits);
-    console.log(this.getClient().configuration?.features?.limits?.default);
-
     if (this.getClient().configured()) {
       // TODO: Use new user limits if the user is new - I don't think there's a way to do that now?
       const limit =
