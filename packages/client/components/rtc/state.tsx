@@ -342,7 +342,8 @@ class Voice {
           {
             resolution:
               this.getEnabledScreenShareQualities()[
-                this.#settings.screenShareQuality || "low"
+                // this.#settings.screenShareQuality || "low"
+                "highest"
               ]?.resolution,
             // TODO: Change this to true when enabling screen share audio.
             audio: false,
@@ -352,7 +353,7 @@ class Voice {
         this.#setScreenshare(room.localParticipant.isScreenShareEnabled);
 
         if (localTrack) {
-          const callback = async (qualityName: ScreenShareQualityName) => {
+          const callbackVideo = async (qualityName: ScreenShareQualityName) => {
             const quality = qualities[qualityName] || qualities.low!;
             console.log("3");
             console.log(quality);
@@ -376,11 +377,12 @@ class Voice {
           };
 
           // Apply constraints with selected quality
-          await callback(this.#settings.screenShareQuality || "low");
+          await callbackVideo(this.#settings.screenShareQuality || "low");
 
           if (this.#settings.screenShareQualityAsk) {
             if (Object.keys(qualities).length > 1) {
-              localTrack.pauseUpstream();
+              await localTrack.pauseUpstream();
+
               this.openModal({
                 onCancel: async () => {
                   await room.localParticipant.setScreenShareEnabled(false);
@@ -399,8 +401,8 @@ class Voice {
                   return { name: k, fullName: v.fullName };
                 }),
                 callback: async (qualityName) => {
-                  callback(qualityName);
-                  localTrack.resumeUpstream();
+                  await callbackVideo(qualityName);
+                  await localTrack.resumeUpstream();
                 },
               });
             }
