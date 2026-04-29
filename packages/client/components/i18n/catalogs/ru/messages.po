@@ -361,6 +361,18 @@ msgstr "Внешний вид"
 msgid "Voice & Video"
 msgstr "Голос & Видео"
 
+#: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
+msgid "Screen Share Settings"
+msgstr "Настройки демонстрации экрана"
+
+#: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
+msgid "Select screen share quality"
+msgstr "Выберете настройки качества демонстрации"
+
+#: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
+msgid "Always Ask for Screen Share Quality"
+msgstr "Всегда спрашивать настроку демонстарции экрана?"
+
 #: components/modal/modals/SignOutSessions.tsx
 msgid "Are you sure you want to clear your sessions?"
 msgstr ""

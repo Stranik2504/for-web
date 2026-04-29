@@ -270,7 +270,7 @@ const Config: SettingsConfiguration<{ server: Server }> = {
             //   title: t("app.special.modals.changelogs.title"),
             // },
             {
-              href: "https://github.com/stoatchat",
+              href: "https://github.com/Stranik2504/for-web",
               icon: <MdMemory {...iconSize(20)} />,
               title: <Trans>Source Code</Trans>,
             },
