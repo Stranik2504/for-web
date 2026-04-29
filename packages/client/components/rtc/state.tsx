@@ -342,8 +342,7 @@ class Voice {
           {
             resolution:
               this.getEnabledScreenShareQualities()[
-                // this.#settings.screenShareQuality || "low"
-                "highest"
+                this.#settings.screenShareQuality || "low"
               ]?.resolution,
             // TODO: Change this to true when enabling screen share audio.
             audio: false,
@@ -361,7 +360,7 @@ class Voice {
 
             if (localTrack.videoTrack) {
               await localTrack.videoTrack.mediaStreamTrack.applyConstraints({
-                frameRate: { max: quality.resolution.frameRate },
+                frameRate: { ideal: quality.resolution.frameRate },
                 width:
                   quality.resolution.width === 0
                     ? undefined
