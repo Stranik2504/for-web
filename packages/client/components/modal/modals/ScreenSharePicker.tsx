@@ -3,13 +3,14 @@ import { createFormControl, createFormGroup } from "solid-forms";
 
 import { useState } from "@revolt/state";
 import { ScreenShareQualityName } from "@revolt/state/stores/Voice";
-import { Column, Dialog, DialogProps, Form2 } from "@revolt/ui";
-import { VideoTrack } from "solid-livekit-components";
+import { Avatar, Column, Dialog, DialogProps, Form2, Ripple } from "@revolt/ui";
 
+import { createMemo } from "solid-js";
+import { styled } from "styled-system/jsx";
 import { Modals } from "../types";
 
-export function ScreenShareSettingsModal(
-  props: DialogProps & Modals & { type: "screen_share_settings" },
+export function ScreenSharePickerModal(
+  props: DialogProps & Modals & { type: "screen_share_picker" },
 ) {
   const { voice } = useState();
   const { t } = useLingui();
@@ -17,27 +18,27 @@ export function ScreenShareSettingsModal(
   const group = createFormGroup({
     qualityName: createFormControl<ScreenShareQualityName>(
       voice.screenShareQuality || "low",
-      { required: true },
     ),
     audio: createFormControl(voice.screenShareAudio),
-    dontAsk: createFormControl(false),
+    idx: createFormControl([0]),
   });
 
   async function onSubmit() {
-    if (group.controls.dontAsk.value) {
-      voice.screenShareQuality = group.controls.qualityName.value;
-      voice.screenShareQualityAsk = false;
-      voice.screenShareAudio = group.controls.audio.value;
-    }
-
     props.callback(
+      group.controls.idx.value[0],
       group.controls.qualityName.value,
-      group.controls.audio.value
+      group.controls.audio.value,
     );
     props.onClose();
   }
 
   const submit = Form2.useSubmitHandler(group, onSubmit);
+
+  const sources = createMemo(() =>
+    props.sources.map((source) => {
+      return { item: source, value: source.idx };
+    }),
+  );
 
   return (
     <Dialog
@@ -47,7 +48,7 @@ export function ScreenShareSettingsModal(
         props.onCancel();
         props.onClose();
       }}
-      title={t`Screen Share Settings`}
+      title={t`Pick a Screen to Share`}
       actions={[
         { text: <Trans>Cancel</Trans> },
         {
@@ -59,17 +60,28 @@ export function ScreenShareSettingsModal(
         },
       ]}
     >
-      <VideoTrack
-        trackRef={props.trackReference}
-        style={{
-          padding: "var(--gap-md)",
-          "border-radius": "var(--borderRadius-lg)",
-          "max-height": "400px",
-          "justify-self": "center",
-        }}
-      />
       <form onSubmit={submit}>
         <Column>
+          <Form2.VirtualSelect
+            control={group.controls.idx}
+            items={sources()}
+            selectHeight="max(30vh, 200px)"
+            isMaxHeight={true}
+            itemHeight={60}
+          >
+            {(val, selected) => (
+              <Item selected={selected}>
+                <Ripple />
+                <Avatar
+                  src={val.image}
+                  fallback={val.name}
+                  size={36}
+                  shape="rounded-square"
+                />
+                <span>{val.name}</span>
+              </Item>
+            )}
+          </Form2.VirtualSelect>
           <Form2.ButtonGroup
             control={group.controls.qualityName}
             buttonDefinitions={props.qualities.map((quality) => {
@@ -82,11 +94,28 @@ export function ScreenShareSettingsModal(
           <Form2.Checkbox control={group.controls.audio}>
             <Trans>Share audio</Trans>
           </Form2.Checkbox>
-          <Form2.Checkbox control={group.controls.dontAsk}>
-            <Trans>Don't ask me again</Trans>
-          </Form2.Checkbox>
         </Column>
       </form>
     </Dialog>
   );
 }
+
+const Item = styled("div", {
+  base: {
+    height: "60px",
+    display: "flex",
+    position: "relative",
+    alignItems: "center",
+    gap: "var(--gap-md)",
+    padding: "var(--gap-md)",
+    borderRadius: "var(--borderRadius-sm)",
+  },
+  variants: {
+    selected: {
+      true: {
+        color: "var(--md-sys-color-on-primary)",
+        background: "var(--md-sys-color-primary)",
+      },
+    },
+  },
+});

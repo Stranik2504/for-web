@@ -325,12 +325,42 @@ class Voice {
   async toggleScreenshare() {
     const room = this.room();
     if (!room) throw "invalid state";
+
     if (this.screenshare()) {
       await room.localParticipant.setScreenShareEnabled(false);
 
       this.#setScreenshare(room.localParticipant.isScreenShareEnabled);
     } else {
       const qualities = this.getEnabledScreenShareQualities();
+      let screenPickerQualityName: ScreenShareQualityName | undefined;
+      let screenPickerAudio: boolean | undefined;
+
+      // Register the modal on screen picker handler if it exists
+      if (window.native) {
+        window.native.onceScreenPicker((sources) => {
+          this.openModal({
+            type: "screen_share_picker",
+            onCancel: () => {
+              window.native.screenPickerCallback(-1, false);
+            },
+            callback: (
+              idx: number,
+              qualityName: ScreenShareQualityName,
+              audio: boolean,
+            ) => {
+              window.native.screenPickerCallback(idx, audio);
+              screenPickerQualityName = qualityName;
+              screenPickerAudio = audio;
+            },
+            sources: sources,
+            qualities: Object.keys(qualities).map((k) => {
+              const v = qualities[k as ScreenShareQualityName]!;
+              return { name: k, fullName: v.fullName };
+            }),
+          });
+        });
+      }
+
       try {
         const localTrack = await room.localParticipant.setScreenShareEnabled(
           true,
@@ -339,15 +369,21 @@ class Voice {
               this.getEnabledScreenShareQualities()[
                 this.#settings.screenShareQuality || "low"
               ]?.resolution,
-            // TODO: Change this to true when enabling screen share audio.
-            audio: false,
+            audio: true,
           },
+        );
+
+        const screenAudioTrack = room.localParticipant.getTrackPublication(
+          Track.Source.ScreenShareAudio,
         );
 
         this.#setScreenshare(room.localParticipant.isScreenShareEnabled);
 
         if (localTrack) {
-          const callbackVideo = async (qualityName: ScreenShareQualityName) => {
+          const callback = async (
+            qualityName: ScreenShareQualityName,
+            audio: boolean
+          ) => {
             const quality = qualities[qualityName] || qualities.low!;
 
             if (localTrack.videoTrack) {
@@ -362,17 +398,31 @@ class Voice {
                     ? undefined
                     : { max: quality.resolution.height },
               });
+
               localTrack.videoTrack.mediaStreamTrack.contentHint =
                 quality.contentHint;
+
+              if (!audio && screenAudioTrack?.track) {
+                room.localParticipant.unpublishTrack(screenAudioTrack.track);
+              }
             }
           };
 
           // Apply constraints with selected quality
-          await callbackVideo(this.#settings.screenShareQuality || "low");
+          await callback(
+            this.#settings.screenShareQuality || "low",
+            this.#settings.screenShareAudio
+          );
 
-          if (this.#settings.screenShareQualityAsk) {
+          if (screenPickerQualityName) {
+            callback(
+              screenPickerQualityName || "low",
+              screenPickerAudio || false,
+            );
+          } else if (this.#settings.screenShareQualityAsk) {
             if (Object.keys(qualities).length > 1) {
               await localTrack.pauseUpstream();
+              screenAudioTrack?.pauseUpstream();
 
               this.openModal({
                 onCancel: async () => {
@@ -391,9 +441,11 @@ class Voice {
                   const v = qualities[k as ScreenShareQualityName]!;
                   return { name: k, fullName: v.fullName };
                 }),
-                callback: async (qualityName) => {
-                  await callbackVideo(qualityName);
+                callback: async (qualityName, audio) => {
+                  await callback(qualityName, audio);
                   await localTrack.resumeUpstream();
+
+                  if (audio) screenAudioTrack?.resumeUpstream();
                 },
               });
             }

@@ -365,6 +365,19 @@ msgstr "Голос & Видео"
 msgid "Screen Share Settings"
 msgstr "Настройки демонстрации экрана"
 
+#: components/app/menus/UserContextMenu.tsx
+msgid "Screen Share Volume"
+msgstr "Громкость стрима"
+
+#: components/modal/modals/ScreenShareSettings.tsx
+#: components/modal/modals/ScreenSharePicker.tsx
+msgid "Mute Screen Share"
+msgstr "Замутить стрим"
+
+#: components/app/menus/UserContextMenu.tsx
+msgid "Share audio"
+msgstr "Поделиться звуком"
+
 #: components/app/interface/settings/user/voice/ScreenShareOptions.tsx
 msgid "Select screen share quality"
 msgstr "Выберете настройки качества демонстрации"
