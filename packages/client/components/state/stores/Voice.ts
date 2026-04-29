@@ -16,7 +16,7 @@ const NoiseSuppresionStates: NoiseSuppresionState[] = [
 /**
  * Possible screen share qualities. Low is 720p@30fps, high 1080p@30fps and text is source@5fps.
  */
-export type ScreenShareQualityName = "low" | "high" | "text";
+export type ScreenShareQualityName = "low" | "high" | "text" | "highest";
 
 /**
  * Array of available screen share quality names.

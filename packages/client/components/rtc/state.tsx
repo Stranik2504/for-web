@@ -17,6 +17,7 @@ import {
   Room,
   ScreenSharePresets,
   Track,
+  VideoPreset,
   VideoResolution,
 } from "livekit-client";
 import { DenoiseTrackProcessor } from "livekit-rnnoise-processor";
@@ -264,6 +265,12 @@ class Voice {
       },
     };
 
+    console.log(this.getClient().configured());
+    console.log(this.getClient().configuration);
+    console.log(this.getClient().configuration?.features);
+    console.log(this.getClient().configuration?.features?.limits);
+    console.log(this.getClient().configuration?.features?.limits?.default);
+
     if (this.getClient().configured()) {
       // TODO: Use new user limits if the user is new - I don't think there's a way to do that now?
       const limit =
@@ -280,6 +287,12 @@ class Voice {
             name: "high",
             resolution: ScreenSharePresets.h1080fps30.resolution,
             fullName: `1080p 30FPS`,
+            contentHint: "motion",
+          };
+          qualities.highest = {
+            name: "highest",
+            resolution: new VideoPreset(1920, 1080, 10_000_000, 60, 'medium'),
+            fullName: `1080p 60FPS`,
             contentHint: "motion",
           };
           const originalResolution = ScreenSharePresets.original.resolution;
