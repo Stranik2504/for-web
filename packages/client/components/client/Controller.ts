@@ -156,6 +156,9 @@ class Lifecycle {
           enabled: false,
           nodes: [],
         },
+        limits: {
+          default: {} as never
+        }
       },
       vapid: String(),
       ws: CONFIGURATION.DEFAULT_WS_URL,
