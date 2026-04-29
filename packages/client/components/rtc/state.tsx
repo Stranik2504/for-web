@@ -285,7 +285,7 @@ class Voice {
           };
           qualities.highest = {
             name: "highest",
-            resolution: new VideoPreset(1920, 1080, 10_000_000, 60, "medium"),
+            resolution: new VideoPreset(1920, 1080, 10_000_000, 60, "high"),
             fullName: `1080p 60FPS`,
             contentHint: "motion",
           };
@@ -332,11 +332,6 @@ class Voice {
     } else {
       const qualities = this.getEnabledScreenShareQualities();
       try {
-        console.log("1");
-        console.log(this.getEnabledScreenShareQualities()[
-        this.#settings.screenShareQuality || "low"
-          ]?.resolution);
-        console.log("2");
         const localTrack = await room.localParticipant.setScreenShareEnabled(
           true,
           {
@@ -354,13 +349,10 @@ class Voice {
         if (localTrack) {
           const callbackVideo = async (qualityName: ScreenShareQualityName) => {
             const quality = qualities[qualityName] || qualities.low!;
-            console.log("3");
-            console.log(quality);
-            console.log("4");
 
             if (localTrack.videoTrack) {
               await localTrack.videoTrack.mediaStreamTrack.applyConstraints({
-                frameRate: { ideal: quality.resolution.frameRate },
+                frameRate: { exact: quality.resolution.frameRate },
                 width:
                   quality.resolution.width === 0
                     ? undefined
