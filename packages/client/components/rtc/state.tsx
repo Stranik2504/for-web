@@ -267,8 +267,8 @@ class Voice {
     if (this.getClient().configured()) {
       // TODO: Use new user limits if the user is new - I don't think there's a way to do that now?
       const limit =
-        this.getClient().configuration?.features.limits.default
-          .video_resolution;
+        this.getClient().configuration?.features?.limits?.default
+          ?.video_resolution;
 
       // TODO: Add more resolutions to stream from if they're enabled. May tie into premium users in the future?
       if (limit) {
@@ -288,8 +288,8 @@ class Voice {
           if (this.getClient().configured()) {
             // TODO: Use new user limits if the user is new - I don't think there's a way to do that now?
             const limit =
-              this.getClient().configuration?.features.limits.default
-                .video_resolution;
+              this.getClient().configuration?.features?.limits?.default
+                ?.video_resolution;
             if (limit) {
               originalResolution.width = limit[0];
               originalResolution.height = limit[1];
