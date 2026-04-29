@@ -192,7 +192,7 @@ export function UserContextMenu(props: {
 
   return (
     <ContextMenu class="UserContextMenu">
-      <Show when={props.inVoice && !props.user.self && !props.isScreenshare}}>
+      <Show when={props.inVoice && !props.user.self && !props.isScreenshare}>
         <ContextMenuButton
           onMouseDown={(e) => e.stopImmediatePropagation()}
           onClick={(e) => e.stopImmediatePropagation()}
