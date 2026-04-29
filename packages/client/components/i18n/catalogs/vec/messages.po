@@ -2998,6 +2998,10 @@ msgstr "Drio védar mesàji antìghi"
 msgid "Voice"
 msgstr ""
 
+#: components/app/interface/settings/UserSettings.tsx
+msgid "Voice & Video"
+msgstr ""
+
 #: components/modal/modals/CreateChannel.tsx
 msgid "Voice Channel"
 msgstr "Canal de Vóxe"

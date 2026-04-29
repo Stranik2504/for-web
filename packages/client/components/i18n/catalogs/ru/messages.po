@@ -357,6 +357,10 @@ msgstr ""
 msgid "Appearance"
 msgstr "Внешний вид"
 
+#: components/app/interface/settings/UserSettings.tsx
+msgid "Voice & Video"
+msgstr "Голос & Видео"
+
 #: components/modal/modals/SignOutSessions.tsx
 msgid "Are you sure you want to clear your sessions?"
 msgstr ""
@@ -2996,7 +3000,7 @@ msgstr "Просмотр старых сообщений"
 #: components/app/interface/settings/UserSettings.tsx
 #: components/app/interface/settings/channel/permissions/ChannelPermissionsEditor.tsx
 msgid "Voice"
-msgstr ""
+msgstr "Голос"
 
 #: components/modal/modals/CreateChannel.tsx
 msgid "Voice Channel"

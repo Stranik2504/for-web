@@ -2998,6 +2998,10 @@ msgstr "Đang xem các tin nhắn cũ"
 msgid "Voice"
 msgstr ""
 
+#: components/app/interface/settings/UserSettings.tsx
+msgid "Voice & Video"
+msgstr ""
+
 #: components/modal/modals/CreateChannel.tsx
 msgid "Voice Channel"
 msgstr "Kênh thoại"
