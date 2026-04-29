@@ -285,7 +285,7 @@ class Voice {
           };
           qualities.highest = {
             name: "highest",
-            resolution: new VideoPreset(1920, 1080, 10_000_000, 60, 'medium'),
+            resolution: new VideoPreset(1920, 1080, 10_000_000, 60, "medium"),
             fullName: `1080p 60FPS`,
             contentHint: "motion",
           };
@@ -358,7 +358,7 @@ class Voice {
                     ? undefined
                     : { max: quality.resolution.width },
                 height:
-                  quality.resolution.width === 0
+                  quality.resolution.height === 0
                     ? undefined
                     : { max: quality.resolution.height },
               });
@@ -366,6 +366,9 @@ class Voice {
                 quality.contentHint;
             }
           };
+
+          // Apply constraints with selected quality
+          await callback(this.#settings.screenShareQuality || "low");
 
           if (this.#settings.screenShareQualityAsk) {
             if (Object.keys(qualities).length > 1) {
@@ -392,8 +395,6 @@ class Voice {
                   localTrack.resumeUpstream();
                 },
               });
-            } else {
-              callback(this.#settings.screenShareQuality || "low");
             }
           }
         }
