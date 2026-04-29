@@ -349,6 +349,7 @@ class Voice {
         if (localTrack) {
           const callback = async (qualityName: ScreenShareQualityName) => {
             const quality = qualities[qualityName] || qualities.low!;
+            console.log(quality);
 
             if (localTrack.videoTrack) {
               await localTrack.videoTrack.mediaStreamTrack.applyConstraints({
