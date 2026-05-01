@@ -30,10 +30,31 @@ export function CreateChannelModal(
         name: group.controls.name.value,
       });
 
+      // Reorder categories
+      const newChannelId = channel.id,
+        categoryId = props.categoryId;
+
+      if (newChannelId && categoryId !== "default") {
+        let ch, chIds;
+
+        props.server.edit({
+          categories: props.server.orderedChannels.map(
+            (cat: { channels: unknown; id: string }) => {
+              chIds = [];
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-expect-error
+              for (ch of cat.channels) if (ch.id !== newChId) chIds.push(ch.id);
+              if (cat.id === categoryId) chIds.push(newChannelId);
+              return { ...cat, channels: chIds };
+            },
+          ),
+        });
+      }
+
       if (props.cb) {
         props.cb(channel);
       } else {
-        navigate(`/server/${props.server.id}/channel/${channel.id}`);
+        navigate(`/server/${props.server.id}/channel/${newChannelId}`);
       }
 
       props.onClose();
