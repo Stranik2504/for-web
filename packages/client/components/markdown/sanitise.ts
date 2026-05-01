@@ -7,12 +7,12 @@ const RE_RECURSIVE =
 /**
  * Regex for matching multi-line blockquotes
  */
-const RE_BLOCKQUOTE = /^([^\S\r\n]*>[^\n]+\n?)+/gm;
+const RE_BLOCKQUOTE = /^(?:[^\S\r\n]*>[^\n]+\n?)+/gm;
 
 /**
  * Regex for matching HTML tags
  */
-const RE_HTML_TAGS = /^(<\/?[a-zA-Z0-9]+>)(.*$)/gm;
+const RE_HTML_TAGS = /^(?:<\/?[a-zA-Z0-9]+>)(?:.*$)/gm;
 
 /**
  * Regex for matching empty lines
@@ -31,6 +31,11 @@ const RE_CODEBLOCK_EMPTY_LINE_FIX =
   /(?<=`{3}[\s\S]*)\n\uF800\n(?=[\s\S]*`{3})/gm;
 
 /**
+ * Regex for matching spoiler URLs
+ */
+const RE_SPOILER_URL = /(https?:\/\/[\w_.~!*''();:@&=+$,/?#[%-]+)\|\|/;
+
+/**
  * Sanitise Markdown input before rendering
  * @param content Input string
  * @returns Sanitised string
@@ -44,12 +49,12 @@ export function sanitise(content: string) {
       // Append empty character if string starts with html tag
       // This is to avoid inconsistencies in rendering Markdown inside/after HTML tags
       // https://github.com/revoltchat/revite/issues/733
-      .replace(RE_HTML_TAGS, (match) => `\uF800${match}`)
+      .replace(RE_HTML_TAGS, "\uF800$&")
 
       // Append empty character if line starts with a plus
       // which would usually open a new list but we want
       // to avoid that behaviour in our case.
-      .replace(RE_PLUS, (match) => `\uF800${match}`)
+      .replace(RE_PLUS, "\uF800$&")
 
       // Replace empty lines with non-breaking space
       // because remark renderer is collapsing empty
@@ -62,7 +67,10 @@ export function sanitise(content: string) {
       .replace(RE_CODEBLOCK_EMPTY_LINE_FIX, "")
 
       // Ensure empty line after blockquotes for correct rendering
-      .replace(RE_BLOCKQUOTE, (match) => `${match}\n`)
+      .replace(RE_BLOCKQUOTE, "$&\n")
+
+      // Prevent spoilers from breaking on links at end
+      .replace(RE_SPOILER_URL, "$1 ||")
   );
 }
 
