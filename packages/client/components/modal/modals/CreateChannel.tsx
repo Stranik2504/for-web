@@ -35,17 +35,17 @@ export function CreateChannelModal(
         categoryId = props.categoryId;
 
       if (newChannelId && categoryId !== "default") {
-        let ch, chIds;
+        let channel, channelIds;
 
         props.server.edit({
           categories: props.server.orderedChannels.map(
-            (cat: { channels: unknown; id: string }) => {
-              chIds = [];
+            (category: { channels: unknown; id: string }) => {
+              channelIds = [];
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-expect-error
-              for (ch of cat.channels) if (ch.id !== newChId) chIds.push(ch.id);
-              if (cat.id === categoryId) chIds.push(newChannelId);
-              return { ...cat, channels: chIds };
+              for (channel of cat.channels) if (ch.id !== newChannelId) channelIds.push(channel.id);
+              if (category.id === categoryId) channelIds.push(newChannelId);
+              return { ...category, channels: channelIds };
             },
           ),
         });
