@@ -403,7 +403,9 @@ class Voice {
                 quality.contentHint;
 
               if (!audio && screenAudioTrack?.track) {
-                room.localParticipant.unpublishTrack(screenAudioTrack.track);
+                await room.localParticipant.unpublishTrack(
+                  screenAudioTrack.track,
+                );
               }
             }
           };
@@ -411,15 +413,17 @@ class Voice {
           // Apply constraints with selected quality
           await callback(
             this.#settings.screenShareQuality || "low",
-            this.#settings.screenShareAudio
+            this.#settings.screenShareAudio,
           );
 
           if (screenPickerQualityName) {
-            callback(
+            await callback(
               screenPickerQualityName || "low",
               screenPickerAudio || false,
             );
-          } else if (this.#settings.screenShareQualityAsk) {
+
+            // TODO: check screen_share_picker not displayed
+          } else if (this.#settings.screenShareQualityAsk && !window.native) { // TODO: Check
             if (Object.keys(qualities).length > 1) {
               await localTrack.pauseUpstream();
               screenAudioTrack?.pauseUpstream();
