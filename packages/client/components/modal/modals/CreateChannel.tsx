@@ -43,7 +43,7 @@ export function CreateChannelModal(
               channelIds = [];
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-expect-error
-              for (channel of cat.channels) if (ch.id !== newChannelId) channelIds.push(channel.id);
+              for (channel of category.channels) if (channel.id !== newChannelId) channelIds.push(channel.id);
               if (category.id === categoryId) channelIds.push(newChannelId);
               return { ...category, channels: channelIds };
             },
