@@ -55,30 +55,6 @@ type ParentNode = {
     )[];
 };
 
-export function RenderSpoiler(props: {
-  children: Element;
-  disabled?: boolean;
-}) {
-  const [shown, setShown] = createSignal(false);
-
-  return (
-    <Spoiler
-      shown={shown()}
-      onClick={props.disabled ? undefined : () => setShown(true)}
-    >
-      {props.children}
-    </Spoiler>
-  );
-}
-
-type ParentNode = {
-  type: "string";
-  children: (
-    | { type: "text"; value: string }
-    | { type: "paragraph" | "spoiler"; children: Node[] }
-    )[];
-};
-
 export const remarkSpoiler: Plugin = () => (tree) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tNodes = (tree as any).children;
