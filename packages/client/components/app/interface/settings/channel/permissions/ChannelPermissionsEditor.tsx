@@ -509,6 +509,7 @@ const StickyPanel = styled("div", {
     bottom: "var(--gap-lg)",
     borderRadius: "var(--borderRadius-xl)",
     background: "var(--md-sys-color-surface)",
+    margin: "0 auto",
   },
 });
 
