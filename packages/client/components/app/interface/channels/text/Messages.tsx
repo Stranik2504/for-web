@@ -671,18 +671,35 @@ export function Messages(props: Props) {
       );
     }
   }
+  /**
+   * Handle bulk-deleted messages
+   */
+  function onMessageDeleteBulk(
+    deleted_messages: { id: string; channelId: string }[],
+    channel?: { id: string },
+  ) {
+    if (channel?.id === props.channel.id) {
+      setMessages((messages) =>
+        messages.filter(
+          (msg) => !deleted_messages.find((m) => m.id === msg.id),
+        ),
+      );
+    }
+  }
 
   // Add listener for messages
   onMount(() => {
     const c = client();
     c.addListener("messageCreate", onMessage);
     c.addListener("messageDelete", onMessageDelete);
+    c.addListener("messageDeleteBulk", onMessageDeleteBulk);
   });
 
   onCleanup(() => {
     const c = client();
     c.removeListener("messageCreate", onMessage);
     c.removeListener("messageDelete", onMessageDelete);
+    c.removeListener("messageDeleteBulk", onMessageDeleteBulk);
   });
 
   // Ensure that we reload when lifecycle state changes
