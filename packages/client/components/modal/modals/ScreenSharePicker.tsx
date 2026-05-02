@@ -4,6 +4,7 @@ import { createFormControl, createFormGroup } from "solid-forms";
 import { useState } from "@revolt/state";
 import { ScreenShareQualityName } from "@revolt/state/stores/Voice";
 import { Column, Dialog, DialogProps, Form2, Ripple } from "@revolt/ui";
+import { VideoTrack } from "solid-livekit-components";
 
 import { createMemo, createSignal } from "solid-js";
 import { styled } from "styled-system/jsx";
@@ -60,7 +61,7 @@ export function ScreenSharePickerModal(
 
   return (
     <Dialog
-      minWidth={420}
+      minWidth={760}
       show={props.show}
       onClose={() => {
         props.onCancel();
@@ -98,21 +99,34 @@ export function ScreenSharePickerModal(
             <Form2.VirtualSelect
               control={group.controls.idx}
               items={currentSources()}
-              selectHeight="max(40vh, 300px)"
+              selectHeight="max(50vh, 320px)"
               isMaxHeight={true}
               itemHeight={120}
             >
               {(val, selected) => (
                 <PreviewItem selected={selected}>
                   <Ripple />
-                  {val.image ? (
+                  {/* If the source exposes a trackReference (future/native), render a live VideoTrack.
+                      Otherwise fall back to the provided image thumbnail or a letter placeholder. */}
+                  {"trackReference" in val ? (
+                    // render live preview if possible
+                    <VideoPreview>
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                      {/* @ts-expect-error trackRef may be provided by native source mapping */}
+                      <VideoTrack
+                        trackRef={(val as unknown as any).trackReference}
+                        manageSubscription={false}
+                        style={{ width: "100%", height: "100%", "object-fit": "cover" }}
+                      />
+                    </VideoPreview>
+                  ) : val.image ? (
                     <PreviewImage src={val.image} alt={val.name} />
                   ) : (
                     <PreviewImagePlaceholder>
                       {val.name.charAt(0).toUpperCase()}
                     </PreviewImagePlaceholder>
                   )}
-                  <PreviewLabel>{val.name}</PreviewLabel>
+                  <PreviewLabel title={val.name}>{val.name}</PreviewLabel>
                 </PreviewItem>
               )}
             </Form2.VirtualSelect>
@@ -170,27 +184,28 @@ const Tab = styled("button", {
 const PreviewGrid = styled("div", {
   base: {
     marginBottom: "var(--gap-md)",
+    display: "grid",
+    gap: "var(--gap-md)",
+    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+    alignItems: "start",
   },
 });
 
 const PreviewItem = styled("div", {
   base: {
-    height: "120px",
+    height: "140px",
     display: "flex",
     flexDirection: "column",
     position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "var(--gap-md)",
-    padding: "var(--gap-md)",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    gap: "var(--gap-sm)",
+    padding: "var(--gap-sm)",
     borderRadius: "var(--borderRadius-md)",
     border: "1px solid var(--md-sys-color-outline)",
     background: "var(--md-sys-color-surface-dim)",
     transition: "all 0.2s ease",
-
-    "&:hover": {
-      borderColor: "var(--md-sys-color-primary)",
-    },
+    minWidth: "160px",
   },
   variants: {
     selected: {
@@ -203,26 +218,37 @@ const PreviewItem = styled("div", {
   },
 });
 
+const VideoPreview = styled("div", {
+  base: {
+    width: "100%",
+    height: "96px",
+    borderRadius: "var(--borderRadius-sm)",
+    overflow: "hidden",
+    background: "#000",
+  },
+});
+
 const PreviewImage = styled("img", {
   base: {
-    width: "60px",
-    height: "60px",
+    width: "100%",
+    height: "96px",
     borderRadius: "var(--borderRadius-sm)",
     objectFit: "cover",
+    display: "block",
   },
 });
 
 const PreviewImagePlaceholder = styled("div", {
   base: {
-    width: "60px",
-    height: "60px",
+    width: "100%",
+    height: "96px",
     borderRadius: "var(--borderRadius-sm)",
     background: "var(--md-sys-color-primary)",
     color: "var(--md-sys-color-on-primary)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "1.5rem",
+    fontSize: "1.25rem",
     fontWeight: "bold",
   },
 });
