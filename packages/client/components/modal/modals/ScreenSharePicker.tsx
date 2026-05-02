@@ -5,7 +5,7 @@ import { useState } from "@revolt/state";
 import { ScreenShareQualityName } from "@revolt/state/stores/Voice";
 import { Column, Dialog, DialogProps, Form2, Ripple } from "@revolt/ui";
 
-import { createMemo, createSignal } from "solid-js";
+import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
 import { styled } from "styled-system/jsx";
 import { Modals } from "../types";
 import { ScreenShareOptions } from "./ScreenShareOptions";
@@ -16,7 +16,9 @@ export function ScreenSharePickerModal(
   const { voice } = useState();
   const { t } = useLingui();
   const [activeTab, setActiveTab] = createSignal<"applications" | "screens">(
-    "applications",
+    props.sources.some((source) => !source.isFullScreen)
+      ? "applications"
+      : "screens",
   );
 
   const group = createFormGroup({
@@ -28,6 +30,8 @@ export function ScreenSharePickerModal(
   });
 
   async function onSubmit() {
+    if (currentSources().length === 0) return;
+
     props.callback(
       group.controls.idx.value[0],
       group.controls.qualityName.value,
@@ -58,9 +62,22 @@ export function ScreenSharePickerModal(
     activeTab() === "applications" ? applications() : screens(),
   );
 
+  createEffect(() => {
+    const sources = currentSources();
+    const selected = group.controls.idx.value[0];
+
+    if (
+      sources.length > 0 &&
+      !sources.some((source) => source.value === selected)
+    ) {
+      group.controls.idx.setValue([sources[0].value]);
+    }
+  });
+
   return (
     <Dialog
-      minWidth={420}
+      minWidth={760}
+      maxWidth={920}
       show={props.show}
       onClose={() => {
         props.onCancel();
@@ -71,6 +88,7 @@ export function ScreenSharePickerModal(
         { text: <Trans>Cancel</Trans> },
         {
           text: <Trans>Go</Trans>,
+          isDisabled: currentSources().length === 0,
           onClick: () => {
             onSubmit();
             return false;
@@ -94,29 +112,46 @@ export function ScreenSharePickerModal(
               {t`Screens`}
             </Tab>
           </TabsContainer>
-          <PreviewGrid>
-            <Form2.VirtualSelect
-              control={group.controls.idx}
-              items={currentSources()}
-              selectHeight="max(40vh, 300px)"
-              isMaxHeight={true}
-              itemHeight={120}
-            >
-              {(val, selected) => (
-                <PreviewItem selected={selected}>
-                  <Ripple />
-                  {val.image ? (
-                    <PreviewImage src={val.image} alt={val.name} />
-                  ) : (
-                    <PreviewImagePlaceholder>
-                      {val.name.charAt(0).toUpperCase()}
-                    </PreviewImagePlaceholder>
-                  )}
-                  <PreviewLabel>{val.name}</PreviewLabel>
-                </PreviewItem>
-              )}
-            </Form2.VirtualSelect>
-          </PreviewGrid>
+          <Show
+            when={currentSources().length > 0}
+            fallback={<EmptyState>{t`No sources found for this tab`}</EmptyState>}
+          >
+            <SourcesGrid>
+              <For each={currentSources()}>
+                {(source) => {
+                  return (
+                    <SourceTile
+                      type="button"
+                      selected={group.controls.idx.value[0] === source.value}
+                      onClick={() => group.controls.idx.setValue([source.value])}
+                    >
+                      <Ripple />
+                      <SourceVisual>
+                        <Show
+                          when={source.item.image}
+                          fallback={
+                            <SourceScreenGlyph>
+                              <div />
+                            </SourceScreenGlyph>
+                          }
+                        >
+                          {(image) => (
+                            <SourceIcon src={image()} alt={source.item.name} />
+                          )}
+                        </Show>
+                      </SourceVisual>
+                      <SourceMeta>
+                        <SourceKind>
+                          {source.item.isFullScreen ? t`Screen` : t`Application`}
+                        </SourceKind>
+                        <SourceName>{source.item.name}</SourceName>
+                      </SourceMeta>
+                    </SourceTile>
+                  );
+                }}
+              </For>
+            </SourcesGrid>
+          </Show>
           <ScreenShareOptions
             qualityControl={group.controls.qualityName}
             audioControl={group.controls.audio}
@@ -131,7 +166,7 @@ export function ScreenSharePickerModal(
 const TabsContainer = styled("div", {
   base: {
     display: "flex",
-    gap: "var(--gap-md)",
+    gap: "var(--gap-sm)",
     marginBottom: "var(--gap-md)",
     borderBottom: "1px solid var(--md-sys-color-outline)",
   },
@@ -152,6 +187,7 @@ const Tab = styled("button", {
     textDecoration: "none",
     width: "100%",
     textAlign: "center",
+    borderRadius: "var(--borderRadius-sm) var(--borderRadius-sm) 0 0",
 
     "&:hover": {
       color: "var(--md-sys-color-on-surface)",
@@ -167,26 +203,37 @@ const Tab = styled("button", {
   },
 });
 
-const PreviewGrid = styled("div", {
+const SourcesGrid = styled("div", {
   base: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+    gap: "var(--gap-md)",
     marginBottom: "var(--gap-md)",
   },
 });
 
-const PreviewItem = styled("div", {
+const SourceTile = styled("button", {
   base: {
-    height: "120px",
+    minHeight: "160px",
+    width: "100%",
+    border: "1px solid var(--md-sys-color-outline)",
+    borderRadius: "var(--borderRadius-md)",
+    background: "var(--md-sys-color-surface-dim)",
+    padding: "var(--gap-md)",
     display: "flex",
     flexDirection: "column",
     position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "var(--gap-md)",
-    padding: "var(--gap-md)",
-    borderRadius: "var(--borderRadius-md)",
-    border: "1px solid var(--md-sys-color-outline)",
-    background: "var(--md-sys-color-surface-dim)",
+    alignItems: "stretch",
+    justifyContent: "space-between",
+    gap: "var(--gap-sm)",
+    textAlign: "left",
+    cursor: "pointer",
     transition: "all 0.2s ease",
+
+    "&:focus-visible": {
+      outline: "2px solid var(--md-sys-color-primary)",
+      outlineOffset: "2px",
+    },
 
     "&:hover": {
       borderColor: "var(--md-sys-color-primary)",
@@ -203,38 +250,76 @@ const PreviewItem = styled("div", {
   },
 });
 
-const PreviewImage = styled("img", {
+const SourceVisual = styled("div", {
   base: {
-    width: "60px",
-    height: "60px",
-    borderRadius: "var(--borderRadius-sm)",
-    objectFit: "cover",
-  },
-});
-
-const PreviewImagePlaceholder = styled("div", {
-  base: {
-    width: "60px",
-    height: "60px",
-    borderRadius: "var(--borderRadius-sm)",
-    background: "var(--md-sys-color-primary)",
-    color: "var(--md-sys-color-on-primary)",
+    minHeight: "84px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "1.5rem",
-    fontWeight: "bold",
   },
 });
 
-const PreviewLabel = styled("span", {
+const SourceIcon = styled("img", {
   base: {
-    fontSize: "0.9rem",
-    fontWeight: "500",
-    textAlign: "center",
-    maxWidth: "100%",
+    width: "64px",
+    height: "64px",
+    borderRadius: "var(--borderRadius-sm)",
+    objectFit: "cover",
+    boxShadow: "var(--shadows-sm)",
+  },
+});
+
+const SourceScreenGlyph = styled("div", {
+  base: {
+    width: "72px",
+    height: "52px",
+    borderRadius: "10px",
+    border: "2px solid currentColor",
+    display: "grid",
+    placeItems: "center",
+
+    "& > div": {
+      width: "34px",
+      height: "22px",
+      borderRadius: "6px",
+      border: "2px solid currentColor",
+    },
+  },
+});
+
+const SourceMeta = styled("div", {
+  base: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "2px",
+  },
+});
+
+const SourceKind = styled("span", {
+  base: {
+    fontSize: "0.78rem",
+    opacity: 0.75,
+  },
+});
+
+const SourceName = styled("span", {
+  base: {
+    fontSize: "0.95rem",
+    fontWeight: "600",
+    lineHeight: 1.2,
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
   },
 });
+
+const EmptyState = styled("div", {
+  base: {
+    padding: "var(--gap-lg)",
+    borderRadius: "var(--borderRadius-md)",
+    border: "1px dashed var(--md-sys-color-outline)",
+    color: "var(--md-sys-color-on-surface-variant)",
+    textAlign: "center",
+  },
+});
+

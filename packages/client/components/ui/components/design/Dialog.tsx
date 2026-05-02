@@ -29,6 +29,7 @@ type Props = DialogProps & {
   scrimBackground?: string;
 
   minWidth?: number;
+  maxWidth?: number;
   padding?: number;
 };
 
@@ -64,6 +65,9 @@ export function Dialog(props: Props) {
                 style={{
                   "min-width": props.minWidth
                     ? `${props.minWidth}px`
+                    : undefined,
+                  "max-width": props.maxWidth
+                    ? `${props.maxWidth}px`
                     : undefined,
                   padding: props.padding ? `${props.padding}px` : undefined,
                 }}
