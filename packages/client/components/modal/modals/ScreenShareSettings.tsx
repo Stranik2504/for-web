@@ -7,6 +7,7 @@ import { Column, Dialog, DialogProps, Form2 } from "@revolt/ui";
 import { VideoTrack } from "solid-livekit-components";
 
 import { Modals } from "../types";
+import { ScreenShareOptions } from "./ScreenShareOptions";
 
 export function ScreenShareSettingsModal(
   props: DialogProps & Modals & { type: "screen_share_settings" },
@@ -32,7 +33,7 @@ export function ScreenShareSettingsModal(
 
     props.callback(
       group.controls.qualityName.value,
-      group.controls.audio.value
+      group.controls.audio.value,
     );
     props.onClose();
   }
@@ -70,18 +71,14 @@ export function ScreenShareSettingsModal(
       />
       <form onSubmit={submit}>
         <Column>
-          <Form2.ButtonGroup
-            control={group.controls.qualityName}
-            buttonDefinitions={props.qualities.map((quality) => {
-              return {
-                children: quality.fullName,
-                value: quality.name,
-              };
-            })}
+          <ScreenShareOptions
+            qualityControl={group.controls.qualityName}
+            audioControl={group.controls.audio}
+            qualities={props.qualities}
           />
-          <Form2.Checkbox control={group.controls.audio}>
-            <Trans>Share audio</Trans>
-          </Form2.Checkbox>
+          {
+            //<!-- Thinking for need there checkbox, because it picks on system picker stream -->
+          }
           <Form2.Checkbox control={group.controls.dontAsk}>
             <Trans>Don't ask me again</Trans>
           </Form2.Checkbox>

@@ -342,6 +342,10 @@ class Voice {
             type: "screen_share_picker",
             onCancel: () => {
               window.native.screenPickerCallback(-1, false);
+              room.localParticipant.setScreenShareEnabled(false);
+              this.#setScreenshare(
+                room.localParticipant.isScreenShareEnabled,
+              );
             },
             callback: (
               idx: number,
@@ -421,9 +425,7 @@ class Voice {
               screenPickerQualityName || "low",
               screenPickerAudio || false,
             );
-
-            // TODO: check screen_share_picker not displayed
-          } else if (this.#settings.screenShareQualityAsk && !window.native) { // TODO: Check
+          } else if (!window.native && this.#settings.screenShareQualityAsk) {
             if (Object.keys(qualities).length > 1) {
               await localTrack.pauseUpstream();
               screenAudioTrack?.pauseUpstream();
